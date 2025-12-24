@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
+from django.contrib import messages
 # Create your views here.
 
 def login(request):
@@ -12,10 +13,10 @@ def login(request):
 
         if user is not None:
             auth.login(request,user)
-            print("Giriş başarılı")
+            messages.add_message(request, messages.SUCCESS, 'Başarıyla giriş yaptınız.')
             return redirect('index')
         else:
-            print("Geçersiz kimlik bilgileri")
+            messages.add_message(request,messages.ERROR,"Kullanıcı adı veya parola yanlış.")
             return redirect('login')
     else:
         return render(request, 'user/login.html')
@@ -33,17 +34,17 @@ def register(request):
         if password == repassword:
             # Username kontrolu
             if User.objects.filter(username= username).exists():
-                print("Bu kullanıcı adı önceden alınmıs")
+                messages.add_message(request,messages.WARNING,"Bu kullanıcı adı önceden alınmıs.")
                 return redirect('register')
             else:
                 if User.objects.filter(email= email).exists():
-                    print("Bu email adresi önceden alınmıs")
+                    messages.add_message(request,messages.WARNING,"Bu email önceden alınmıs.")
                     return redirect('register')
                 else:
                     # print("Her sey guzel")
                     user = User.objects.create_user(username=username,password=password,email=email)
                     user.save()
-                    print("Kullanıcı oluşturuldu")
+                    messages.add_message(request,messages.SUCCESS,"Başarıyla kayıt oldunuz.Giriş yapabilirsiniz.")
                     return redirect('login')
 
 
