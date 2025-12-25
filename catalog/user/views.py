@@ -55,6 +55,11 @@ def register(request):
         return render(request, 'user/register.html')
 
 def logout(request):
+
+    if request.method == "POST":
+        auth.logout(request)
+        messages.add_message(request,messages.SUCCESS,"Başarıyla çıkış yaptınız.")
+        return redirect('index')
     return render(request, 'user/logout.html')
 
 
